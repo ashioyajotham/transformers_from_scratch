@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## My second attempt at building transformers from scratch using the [Attention paper](https://arxiv.org/abs/1706.03762) as a guide.
 
 ## The goal of this project is to build a transformer model from scratch using PyTorch. The model will be trained on a simple dataset and will be evaluated on a test set. The model will be built using the following components:
@@ -21,3 +22,6 @@
 
 
 Side note: I was listening to the theory of consciousness from the YouTube video [Consciousness of Artificial Intelligence](https://www.youtube.com/watch?v=sISkAb7suqo) while writing this README. It's a very interesting video and I highly recommend it.
+=======
+## My second attempt at building transformers from scratch using the Attention paper :)
+>>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
