@@ -66,19 +66,11 @@ class TestTransformer(unittest.TestCase):
 
         # Create (shared) vocabulary and special token indices given a dummy corpus
         corpus = [
-<<<<<<< HEAD
             "Hello my name is Joris and I was born with the name Joris.",
             "Dit is een Nederlandse zin.",
         ]
         en_vocab = Vocabulary(corpus)
         en_vocab_size = len(en_vocab.token2index.items())
-=======
-            "Hello, my name is Joris and I was born with the name Joris.",
-            "Dit is een Nederlandse zin.",
-        ]
-        en_vocab = Vocabulary(corpus)
-        en_vocab_size = len(en_vocab.token_to_index.items())
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
         with torch.no_grad():
             transformer = Transformer(
                 hidden_dim=512,
@@ -87,13 +79,8 @@ class TestTransformer(unittest.TestCase):
                 num_layers=6,
                 max_decoding_length=10,
                 vocab_size=en_vocab_size,
-<<<<<<< HEAD
                 padding_idx=en_vocab.token2index[en_vocab.PAD],
                 bos_idx=en_vocab.token2index[en_vocab.BOS],
-=======
-                padding_idx=en_vocab.token_to_index[en_vocab.PAD],
-                bos_idx=en_vocab.token_to_index[en_vocab.BOS],
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                 dropout_p=0.1,
                 tie_output_to_embedding=True,
             )

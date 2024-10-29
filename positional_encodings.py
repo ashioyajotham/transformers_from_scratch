@@ -3,7 +3,6 @@ import unittest
 
 import torch
 
-<<<<<<< HEAD
 
 class SinusoidEncoding(torch.nn.Module):
     """
@@ -57,35 +56,6 @@ class TestSinusoidEncoding(unittest.TestCase):
         encoding = SinusoidEncoding(dim).forward(x)
         expected = torch.Tensor(
             [
-=======
-class SinusoidEncoding(torch.nn.Module):
-
-    def __init__(self, hidden_dim, max_len = 5000):
-
-        super().__init__()
-        pos_embed = torch.zeros(max_len, hidden_dim)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, hidden_dim, 2).float() * (-math.log(10000.0) / hidden_dim))
-        pos_embed[:,0::2] = torch.sin(position * div_term)
-        pos_embed[:,1::2] = torch.cos(position * div_term)
-        pos_embed = pos_embed.unsqueeze(0)
-
-        self.register_buffer("pos_embed", pos_embed, persistent = False)
-
-    def forward(self, x):
-        x = x + self.pos_embed[:, : x.size(1)]
-        return x
-    
-class TestSinusoidEncoding(unittest.TestCase):
-    def test_create_embedding(self):
-        batch = 1
-        dim = 3
-        len = 5
-        x = torch.randn(batch, len, dim)
-        pos_enc = SinusoidEncoding(dim).forward(x)
-        expected = torch.Tensor(
-            [ 
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                 [
                     [
                         0.0000e00,
@@ -106,20 +76,6 @@ class TestSinusoidEncoding(unittest.TestCase):
                         9.9995e-01,
                         1.0000e-03,
                         1.0000e00,
-<<<<<<< HEAD
-=======
-
-                    ],
-                    [
-                        0.9093e00,
-                        -0.4161e00,
-                        0.4121e00,
-                        -0.9119e00,
-                        -0.9589e00,
-                        -0.2837e00,
-                        -0.5440e00,
-                        -0.8391e00,
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                     ],
                     [
                         9.0930e-01,
@@ -127,33 +83,21 @@ class TestSinusoidEncoding(unittest.TestCase):
                         1.9867e-01,
                         9.8007e-01,
                         1.9999e-02,
-<<<<<<< HEAD
                         9.9980e-01,
-=======
-                        9.9998e-01,
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                         2.0000e-03,
                         1.0000e00,
                     ],
                 ]
             ]
         )
-<<<<<<< HEAD
         torch.testing.assert_close(encoding, expected, rtol=10e-5, atol=10e-5)
-=======
-        torch.testing.assert_close(pos_enc, expected, rtol = 10e-5, atol = 10e-5)
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
 
     def test_create_embedding_multi_batch(self):
         batch = 2
         dim = 8
         len = 3
         x = torch.zeros(batch, len, dim)
-<<<<<<< HEAD
         encoding = SinusoidEncoding(dim).forward(x)
-=======
-        pos_enc = SinusoidEncoding(dim).forward(x)
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
         expected = torch.Tensor(
             [
                 [
@@ -183,11 +127,7 @@ class TestSinusoidEncoding(unittest.TestCase):
                         1.9867e-01,
                         9.8007e-01,
                         1.9999e-02,
-<<<<<<< HEAD
                         9.9980e-01,
-=======
-                        9.9998e-01,
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                         2.0000e-03,
                         1.0000e00,
                     ],
@@ -219,23 +159,15 @@ class TestSinusoidEncoding(unittest.TestCase):
                         1.9867e-01,
                         9.8007e-01,
                         1.9999e-02,
-<<<<<<< HEAD
                         9.9980e-01,
-=======
-                        9.9998e-01,
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
                         2.0000e-03,
                         1.0000e00,
                     ],
                 ],
             ]
         )
-<<<<<<< HEAD
         torch.testing.assert_close(encoding, expected, rtol=10e-5, atol=10e-5)
 
-=======
-        torch.testing.assert_close(pos_enc, expected, rtol = 10e-5, atol = 10e-5)
->>>>>>> dab5c9249314359e4f2c40ef3899de33729105da
 
 if __name__ == "__main__":
     unittest.main()
