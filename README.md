@@ -10,8 +10,6 @@
 
 ## The model will be trained using the Adam optimizer and the learning rate will be scheduled using the Noam learning rate scheduler. The model will be evaluated using the [BLEU score metric](https://en.wikipedia.org/wiki/BLEU).
 
-## The project will be implemented in Python using PyTorch and will be available as a Jupyter notebook.
-
 ## The project will be divided into the following sections:
 1. Data Preprocessing
 2. Model Architecture
