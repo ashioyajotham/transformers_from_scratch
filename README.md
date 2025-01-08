@@ -24,4 +24,4 @@
 4. Evaluation
 5. Conclusion
 
-## Side note: I was listening to the theory of consciousness from the YouTube video [Consciousness of Artificial Intelligence](https://www.youtube.com/watch?v=sISkAb7suqo) while building this. It's a very interesting video and I highly recommend it.
+#### Side note: I was listening to the theory of consciousness from the YouTube video [Consciousness of Artificial Intelligence](https://www.youtube.com/watch?v=sISkAb7suqo) while building this. It's a very interesting video and I highly recommend it.
