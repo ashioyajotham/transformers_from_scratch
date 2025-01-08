@@ -1,7 +1,6 @@
+# Building Transformers from Scratch
 ## My second attempt at building transformers from scratch using the [Attention paper](https://arxiv.org/abs/1706.03762) as a guide.
 * Special thanks to [Joris Baan](https://github.com/jsbaan/transformer-from-scratch) for the original code and the inspiration to build this project.
-
-# Building Transformers from Scratch
 ## Introduction
 ### Transformers have become the go-to model for many natural language processing tasks. They have been shown to outperform RNNs and LSTMs on many tasks. The transformer model was introduced in the paper [Attention is All You Need](https://arxiv.org/abs/1706.03762) by Vaswani et al. The transformer model is based on the self-attention mechanism, which allows the model to focus on different parts of the input sequence when making predictions. The transformer model consists of an encoder and a decoder, each of which is composed of multiple layers of self-attention and feed-forward neural networks. The transformer model has been shown to achieve state-of-the-art performance on many natural language processing tasks, including machine translation, text summarization, and question answering.
 
