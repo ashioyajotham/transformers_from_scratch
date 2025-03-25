@@ -58,8 +58,20 @@ def train(
     """
     transformer.train(True)
     num_iters = 0
+    total_iters = n_epochs * len(batches["src"])
+    epoch_losses = []
+    epoch_accuracies = []
+
+    print("\nTraining Progress:")
+    print("-" * 60)
+    print(f"{'Epoch':^6} | {'Iteration':^10} | {'Loss':^10} | {'Accuracy':^10} | {'Progress':^15}")
+    print("-" * 60)
 
     for e in range(n_epochs):
+        epoch_loss = 0.0
+        epoch_accuracy = 0.0
+        num_batches = 0
+
         for i, (src_batch, src_mask, tgt_batch, tgt_mask) in enumerate(
             zip(batches["src"], masks["src"], batches["tgt"], masks["tgt"])
         ):
@@ -71,8 +83,6 @@ def train(
 
             encoder_output = transformer.encoder(src_batch, src_padding_mask=src_mask)  # type: ignore
 
-            # Perform one decoder forward pass to obtain *all* next-token predictions for every index i given its
-            # previous *gold standard* tokens [1,..., i] (i.e. teacher forcing) in parallel/at once.
             decoder_output = transformer.decoder(
                 tgt_batch,
                 encoder_output,
@@ -80,33 +90,46 @@ def train(
                 future_mask=tgt_mask,
             )  # type: ignore
 
-            # Align labels with predictions: the last decoder prediction is meaningless because we have no target token
-            # for it. The BOS token in the target is also not something we want to compute a loss for.
             decoder_output = decoder_output[:, :-1, :]
             tgt_batch = tgt_batch[:, 1:]
 
-            # Compute the average cross-entropy loss over all next-token predictions at each index i given [1, ..., i]
             batch_loss = criterion(
                 decoder_output.contiguous().permute(0, 2, 1),
                 tgt_batch.contiguous().long(),
             )
 
-            # Rough estimate of per-token accuracy in the current training batch
             batch_accuracy = (
                 torch.sum(decoder_output.argmax(dim=-1) == tgt_batch)
             ) / torch.numel(tgt_batch)
 
-            if num_iters % 10 == 0:  
-                print(
-                    f"epoch: {e}, num_iters: {num_iters}, batch_loss: {batch_loss:.4f}, batch_accuracy: {batch_accuracy:.4f}"
-                )
+            # Update running averages
+            epoch_loss += batch_loss.item()
+            epoch_accuracy += batch_accuracy.item()
+            num_batches += 1
 
-            # Update parameters
+            if num_iters % 5 == 0:  # Print every 5 iterations
+                progress = f"{num_iters}/{total_iters}"
+                print(f"{e:^6} | {num_iters:^10} | {batch_loss.item():^10.4f} | {batch_accuracy.item():^10.4f} | {progress:^15}")
+
             batch_loss.backward()
             scheduler.step()
             scheduler.optimizer.zero_grad()
             num_iters += 1
-            print(f"Progress: {num_iters} / {n_epochs * len(batches['src'])}")
+
+        # Compute epoch averages
+        avg_epoch_loss = epoch_loss / num_batches
+        avg_epoch_accuracy = epoch_accuracy / num_batches
+        epoch_losses.append(avg_epoch_loss)
+        epoch_accuracies.append(avg_epoch_accuracy)
+
+        print("-" * 60)
+        print(f"Epoch {e} Summary - Avg Loss: {avg_epoch_loss:.4f}, Avg Accuracy: {avg_epoch_accuracy:.4f}")
+        print("-" * 60)
+
+    print("\nTraining Complete!")
+    print(f"Final Average Loss: {sum(epoch_losses) / len(epoch_losses):.4f}")
+    print(f"Final Average Accuracy: {sum(epoch_accuracies) / len(epoch_accuracies):.4f}")
+    
     return batch_loss, batch_accuracy
 
 
@@ -130,10 +153,12 @@ class TestTransformerTraining(unittest.TestCase):
             "Testing copy",
         ]
         print(f"\nTest corpus: {corpus}")
+        print("Tokenized corpus:")
         
         en_vocab = Vocabulary(corpus)
         en_vocab_size = len(en_vocab.token2index.items())
         print(f"Vocabulary size: {en_vocab_size}")
+        print("Vocabulary:", list(en_vocab.token2index.keys()))
 
         # Adjust model size based on device
         if device.type == "cuda":
@@ -141,13 +166,18 @@ class TestTransformerTraining(unittest.TestCase):
             num_heads, num_layers = 8, 6
             n_epochs = 10
         else:
-            print("Running with reduced model size on CPU")
+            print("\nRunning with reduced model size on CPU")
             hidden_dim = DEFAULT_CONFIG["test_hidden_dim"]
             ff_dim = DEFAULT_CONFIG["test_ff_dim"]
             num_heads = DEFAULT_CONFIG["test_num_heads"]
             num_layers = DEFAULT_CONFIG["test_num_layers"]
             n_epochs = DEFAULT_CONFIG["test_n_epochs"]
-            print(f"Model config - hidden_dim: {hidden_dim}, ff_dim: {ff_dim}, heads: {num_heads}, layers: {num_layers}")
+            print(f"Model config:")
+            print(f"- Hidden dim: {hidden_dim}")
+            print(f"- FF dim: {ff_dim}")
+            print(f"- Attention heads: {num_heads}")
+            print(f"- Layers: {num_layers}")
+            print(f"- Epochs: {n_epochs}")
 
         transformer = Transformer(
             hidden_dim=hidden_dim,
